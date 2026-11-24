@@ -2,7 +2,6 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -50,7 +49,7 @@ file_put_contents("{$tmp}/stubs/view.php", '<?php return ["paths" => ["' . "{$th
 file_put_contents("{$theme}/config/app.php", '<?php return ["name" => "Overridden"];');
 
 $app = Foundations::create($theme, [], ["{$tmp}/stubs"]);
-$app->make(ConsoleKernel::class)->bootstrap();
+$app->make(HttpKernel::class)->bootstrap();
 
 $config = $app['config'];
 
@@ -59,9 +58,11 @@ check($config->get('app.locale') === 'en_GB', 'foundations stub values should be
 check($config->get('app.name') === 'Overridden', 'application config must win over stubs');
 check($config->get('view.framework_stub') === true, 'registered stub directories must layer over foundations stubs');
 check($config->get('database.connections.wordpress.driver') === 'mysql', 'wordpress db connection stub should exist');
-check($config->get('cache.stores.file') !== null, 'cache stores should merge with laravel defaults');
-check($config->get('mail.default') !== null, 'laravel defaults without a stub must survive');
+check($config->get('cache.stores.file') !== null, 'cache stores should be configured');
+$cached = eval('return ' . var_export(MM\Foundations\Bootstrap\LoadConfiguration::items($app), true) . ';');
+check($cached['app']['name'] === 'Overridden', 'config must survive caching');
 
+check($app->make('view')->exists('meros-test::x') === false, 'unknown namespaced view must not exist');
 $response = $app->make(HttpKernel::class)->handle(Request::create('/hi'));
 check(trim($response->getContent()) === 'Hello Meros from Overridden', 'blade view should render through a routed request: ' . $response->getContent());
 

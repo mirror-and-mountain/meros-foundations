@@ -2,13 +2,8 @@
 
 namespace MM\Foundations;
 
-use Illuminate\Contracts\Console\Kernel as ConsoleKernelContract;
-use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
-use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Routing\Middleware\SubstituteBindings;
 use MM\Foundations\Config\Stubs;
-use MM\Foundations\Console\Kernel as ConsoleKernel;
-use MM\Foundations\Http\Kernel as HttpKernel;
+use MM\Foundations\Console\Cli;
 use MM\Foundations\WordPress\Runtime;
 
 final class Foundations
@@ -25,25 +20,13 @@ final class Foundations
             Stubs::register($directory);
         }
 
-        $app = Application::configure($root)
-            ->withProviders($providers)
-            ->withRouting(web: is_file($web = "{$root}/routes/web.php") ? $web : null)
-            ->withMiddleware(function (Middleware $middleware) {
-                // WordPress owns cookies, sessions and nonces on its own pages.
-                $middleware->group('wordpress', [SubstituteBindings::class]);
-            })
-            ->withExceptions()
-            ->create();
-
-        $app->useStoragePath(self::storagePath());
-        $app->useBootstrapPath($app->storagePath('framework'));
+        $app = (new Application($root))
+            ->usePaths(['storage' => self::storagePath()])
+            ->withProviders($providers);
 
         foreach (['framework/cache/data', 'framework/views', 'framework/sessions', 'logs', 'app'] as $directory) {
             is_dir($path = $app->storagePath($directory)) || @mkdir($path, 0775, true);
         }
-
-        $app->singleton(HttpKernelContract::class, HttpKernel::class);
-        $app->singleton(ConsoleKernelContract::class, ConsoleKernel::class);
 
         $wordpressRouting && $app->handleWordPressRequests();
 
@@ -56,6 +39,7 @@ final class Foundations
         $app = self::create($root, $providers, $stubs, $wordpressRouting);
 
         (new Runtime($app))->boot();
+        Cli::register($app);
 
         return $app;
     }

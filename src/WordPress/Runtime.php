@@ -2,7 +2,6 @@
 
 namespace MM\Foundations\WordPress;
 
-use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,8 +11,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use MM\Foundations\Application;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Throwable;
 
 /** Attaches a Foundations application to WordPress (web requests and WP-CLI). */
@@ -32,25 +29,7 @@ class Runtime
 
     protected function bootConsole(): void
     {
-        $this->app->make(ConsoleKernel::class)->bootstrap();
-
-        if (!defined('WP_CLI') || !WP_CLI) {
-            return;
-        }
-
-        \WP_CLI::add_command('meros', function (array $args, array $options) {
-            $argv = ['meros', ...$args];
-
-            foreach ($options as $key => $value) {
-                $argv[] = $value === true ? "--{$key}" : "--{$key}={$value}";
-            }
-
-            $kernel = $this->app->make(ConsoleKernel::class);
-            $status = $kernel->handle($input = new ArgvInput($argv), new ConsoleOutput());
-            $kernel->terminate($input, $status);
-
-            \WP_CLI::halt($status);
-        });
+        $this->app->make(HttpKernel::class)->bootstrap();
     }
 
     protected function bootHttp(): void
