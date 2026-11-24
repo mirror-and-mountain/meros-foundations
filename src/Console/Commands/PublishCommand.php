@@ -1,8 +1,8 @@
 <?php
 
-namespace MM\Foundations\Console\Commands;
+namespace MM\Meros\Foundations\Console\Commands;
 
-use MM\Foundations\Config\Stubs;
+use MM\Meros\Foundations\Config\Stubs;
 
 /** Copy Meros config stubs into the active theme's config directory. */
 class PublishCommand extends Command

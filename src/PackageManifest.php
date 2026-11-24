@@ -1,6 +1,6 @@
 <?php
 
-namespace MM\Foundations;
+namespace MM\Meros\Foundations;
 
 use Illuminate\Filesystem\Filesystem;
 use RuntimeException;

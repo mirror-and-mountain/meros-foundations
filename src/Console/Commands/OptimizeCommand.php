@@ -1,8 +1,8 @@
 <?php
 
-namespace MM\Foundations\Console\Commands;
+namespace MM\Meros\Foundations\Console\Commands;
 
-use MM\Foundations\PackageManifest;
+use MM\Meros\Foundations\PackageManifest;
 
 /** Cache config, package discovery and views in one go. */
 class OptimizeCommand extends Command

@@ -1,10 +1,10 @@
 <?php
 
-namespace MM\Foundations\Bootstrap;
+namespace MM\Meros\Foundations\Bootstrap;
 
 use ErrorException;
 use Illuminate\Contracts\Debug\ExceptionHandler;
-use MM\Foundations\Application;
+use MM\Meros\Foundations\Application;
 use Throwable;
 
 /**

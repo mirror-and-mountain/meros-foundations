@@ -1,6 +1,6 @@
 <?php
 
-namespace MM\Foundations\Console\Commands;
+namespace MM\Meros\Foundations\Console\Commands;
 
 use Illuminate\Encryption\Encrypter;
 

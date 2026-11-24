@@ -1,8 +1,8 @@
 <?php
 
-namespace MM\Foundations\Console\Commands;
+namespace MM\Meros\Foundations\Console\Commands;
 
-use MM\Foundations\Bootstrap\LoadConfiguration;
+use MM\Meros\Foundations\Bootstrap\LoadConfiguration;
 
 /** Cache the merged configuration into a single file. */
 class ConfigCommand extends Command

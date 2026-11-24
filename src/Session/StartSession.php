@@ -1,6 +1,6 @@
 <?php
 
-namespace MM\Foundations\Session;
+namespace MM\Meros\Foundations\Session;
 
 use Illuminate\Session\Middleware\StartSession as BaseStartSession;
 

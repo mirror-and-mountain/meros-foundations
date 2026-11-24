@@ -1,6 +1,6 @@
 <?php
 
-namespace MM\Foundations\Config;
+namespace MM\Meros\Foundations\Config;
 
 use Illuminate\Support\Facades\File;
 

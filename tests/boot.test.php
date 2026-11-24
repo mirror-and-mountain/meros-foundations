@@ -5,8 +5,8 @@ require __DIR__ . '/../vendor/autoload.php';
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
-use MM\Foundations\Config\Stubs;
-use MM\Foundations\Foundations;
+use MM\Meros\Foundations\Config\Stubs;
+use MM\Meros\Foundations\Foundations;
 
 // Minimal WordPress surface the stubs and runtime rely on.
 $tmp = sys_get_temp_dir() . '/meros-foundations-' . getmypid();
@@ -59,7 +59,7 @@ check($config->get('app.name') === 'Overridden', 'application config must win ov
 check($config->get('view.framework_stub') === true, 'registered stub directories must layer over foundations stubs');
 check($config->get('database.connections.wordpress.driver') === 'mysql', 'wordpress db connection stub should exist');
 check($config->get('cache.stores.file') !== null, 'cache stores should be configured');
-$cached = eval('return ' . var_export(MM\Foundations\Bootstrap\LoadConfiguration::items($app), true) . ';');
+$cached = eval('return ' . var_export(MM\Meros\Foundations\Bootstrap\LoadConfiguration::items($app), true) . ';');
 check($cached['app']['name'] === 'Overridden', 'config must survive caching');
 
 check($app->make('view')->exists('meros-test::x') === false, 'unknown namespaced view must not exist');

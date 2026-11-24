@@ -1,10 +1,10 @@
 <?php
 
-namespace MM\Foundations;
+namespace MM\Meros\Foundations;
 
-use MM\Foundations\Config\Stubs;
-use MM\Foundations\Console\Cli;
-use MM\Foundations\WordPress\Runtime;
+use MM\Meros\Foundations\Config\Stubs;
+use MM\Meros\Foundations\Console\Cli;
+use MM\Meros\Foundations\WordPress\Runtime;
 
 final class Foundations
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace MM\Foundations\Console;
+namespace MM\Meros\Foundations\Console;
 
-use MM\Foundations\Application;
+use MM\Meros\Foundations\Application;
 
 /** Registers the `wp meros:*` housekeeping commands. */
 final class Cli

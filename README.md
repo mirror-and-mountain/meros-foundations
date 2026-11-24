@@ -3,7 +3,7 @@
 A lean Laravel-in-WordPress integration layer for the Meros framework. It replaces `roots/acorn` with only the pieces Meros needs, built directly on the `illuminate/*` components (no `laravel/framework`, no vendored `Illuminate\Foundation`). It also owns `livewire/livewire` and `symfony/uid`.
 
 ```php
-MM\Foundations\Foundations::boot(get_stylesheet_directory(), $providers, $stubDirectories);
+MM\Meros\Foundations\Foundations::boot(get_stylesheet_directory(), $providers, $stubDirectories);
 ```
 
 ## What it does

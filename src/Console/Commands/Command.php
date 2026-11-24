@@ -1,8 +1,8 @@
 <?php
 
-namespace MM\Foundations\Console\Commands;
+namespace MM\Meros\Foundations\Console\Commands;
 
-use MM\Foundations\Application;
+use MM\Meros\Foundations\Application;
 
 abstract class Command
 {

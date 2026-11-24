@@ -1,10 +1,10 @@
 <?php
 
-namespace MM\Foundations\Bootstrap;
+namespace MM\Meros\Foundations\Bootstrap;
 
 use Illuminate\Config\Repository;
-use MM\Foundations\Application;
-use MM\Foundations\Config\Stubs;
+use MM\Meros\Foundations\Application;
+use MM\Meros\Foundations\Config\Stubs;
 use Symfony\Component\Finder\Finder;
 
 /**

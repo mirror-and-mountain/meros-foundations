@@ -1,6 +1,6 @@
 <?php
 
-namespace MM\Foundations\Console\Commands;
+namespace MM\Meros\Foundations\Console\Commands;
 
 /** Manage the application cache. */
 class CacheCommand extends Command

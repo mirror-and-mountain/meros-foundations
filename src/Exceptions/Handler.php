@@ -1,12 +1,12 @@
 <?php
 
-namespace MM\Foundations\Exceptions;
+namespace MM\Meros\Foundations\Exceptions;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use MM\Foundations\Application;
+use MM\Meros\Foundations\Application;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;

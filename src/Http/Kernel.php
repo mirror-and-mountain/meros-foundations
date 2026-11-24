@@ -1,14 +1,14 @@
 <?php
 
-namespace MM\Foundations\Http;
+namespace MM\Meros\Foundations\Http;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Http\Kernel as KernelContract;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Facade;
-use MM\Foundations\Application;
-use MM\Foundations\Bootstrap;
+use MM\Meros\Foundations\Application;
+use MM\Meros\Foundations\Bootstrap;
 use Throwable;
 
 class Kernel implements KernelContract
@@ -34,7 +34,7 @@ class Kernel implements KernelContract
     {
         return [
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \MM\Foundations\Session\StartSession::class,
+            \MM\Meros\Foundations\Session\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ];

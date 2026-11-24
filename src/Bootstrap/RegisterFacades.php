@@ -1,9 +1,9 @@
 <?php
 
-namespace MM\Foundations\Bootstrap;
+namespace MM\Meros\Foundations\Bootstrap;
 
 use Illuminate\Support\Facades\Facade;
-use MM\Foundations\Application;
+use MM\Meros\Foundations\Application;
 
 class RegisterFacades
 {

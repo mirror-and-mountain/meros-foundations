@@ -1,6 +1,6 @@
 <?php
 
-namespace MM\Foundations\WordPress;
+namespace MM\Meros\Foundations\WordPress;
 
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use MM\Foundations\Application;
+use MM\Meros\Foundations\Application;
 use Throwable;
 
 /** Attaches a Foundations application to WordPress (web requests and WP-CLI). */

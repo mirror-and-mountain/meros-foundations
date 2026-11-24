@@ -1,10 +1,10 @@
 <?php
 
-namespace MM\Foundations\Bootstrap;
+namespace MM\Meros\Foundations\Bootstrap;
 
 use Dotenv\Dotenv;
 use Illuminate\Support\Env;
-use MM\Foundations\Application;
+use MM\Meros\Foundations\Application;
 
 class LoadEnvironmentVariables
 {

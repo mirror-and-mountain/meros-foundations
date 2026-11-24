@@ -1,6 +1,6 @@
 <?php
 
-namespace MM\Foundations\Providers;
+namespace MM\Meros\Foundations\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;

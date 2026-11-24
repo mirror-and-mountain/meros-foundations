@@ -29,7 +29,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MM\\Foundations\\": "src/"
+            "MM\\Meros\\Foundations\\": "src/"
         },
         "files": [
             "src/helpers.php"
@@ -37,7 +37,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "MM\\Foundations\\Tests\\": "tests/"
+            "MM\\Meros\\Foundations\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "stable",

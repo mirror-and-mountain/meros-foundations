@@ -1,6 +1,6 @@
 <?php
 
-namespace MM\Foundations;
+namespace MM\Meros\Foundations;
 
 use Closure;
 use Illuminate\Container\Container;
@@ -30,8 +30,8 @@ class Application extends Container implements ApplicationContract
         \Illuminate\Cache\CacheServiceProvider::class,
         \Illuminate\Cookie\CookieServiceProvider::class,
         \Illuminate\Session\SessionServiceProvider::class,
-        \MM\Foundations\View\ViewServiceProvider::class,
-        \MM\Foundations\Providers\FoundationServiceProvider::class,
+        \MM\Meros\Foundations\View\ViewServiceProvider::class,
+        \MM\Meros\Foundations\Providers\FoundationServiceProvider::class,
     ];
 
     protected string $basePath;
@@ -61,8 +61,8 @@ class Application extends Container implements ApplicationContract
         $this->singleton(PackageManifest::class, fn () => $this->makeManifest());
         $this->bindPaths();
         $this->registerCoreAliases();
-        $this->singleton(\Illuminate\Contracts\Http\Kernel::class, \MM\Foundations\Http\Kernel::class);
-        $this->singleton(\Illuminate\Contracts\Debug\ExceptionHandler::class, \MM\Foundations\Exceptions\Handler::class);
+        $this->singleton(\Illuminate\Contracts\Http\Kernel::class, \MM\Meros\Foundations\Http\Kernel::class);
+        $this->singleton(\Illuminate\Contracts\Debug\ExceptionHandler::class, \MM\Meros\Foundations\Exceptions\Handler::class);
 
         foreach ([EventServiceProvider::class, LogServiceProvider::class, RoutingServiceProvider::class] as $provider) {
             $this->register($provider);

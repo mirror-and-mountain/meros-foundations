@@ -1,8 +1,8 @@
 <?php
 
-namespace MM\Foundations\Bootstrap;
+namespace MM\Meros\Foundations\Bootstrap;
 
-use MM\Foundations\Application;
+use MM\Meros\Foundations\Application;
 
 class RegisterProviders
 {

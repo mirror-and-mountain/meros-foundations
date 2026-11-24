@@ -1,11 +1,11 @@
 <?php
 
-namespace MM\Foundations\View;
+namespace MM\Meros\Foundations\View;
 
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use MM\Foundations\View\Concerns\Extractable;
+use MM\Meros\Foundations\View\Concerns\Extractable;
 
 // Adapted from roots/acorn (MIT).
 abstract class Composer

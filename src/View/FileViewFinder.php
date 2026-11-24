@@ -1,6 +1,6 @@
 <?php
 
-namespace MM\Foundations\View;
+namespace MM\Meros\Foundations\View;
 
 use Illuminate\View\FileViewFinder as FileViewFinderBase;
 

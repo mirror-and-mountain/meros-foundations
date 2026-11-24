@@ -1,6 +1,6 @@
 <?php
 
-namespace MM\Foundations\View\Concerns;
+namespace MM\Meros\Foundations\View\Concerns;
 
 use Closure;
 use Illuminate\View\InvokableComponentVariable;
