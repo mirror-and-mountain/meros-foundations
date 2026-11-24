@@ -123,3 +123,10 @@ if (!function_exists('event')) {
         return app('events')->dispatch(...$args);
     }
 }
+
+// Packages written against Laravel extend this base user class.
+spl_autoload_register(static function (string $class): void {
+    if ($class === 'Illuminate\\Foundation\\Auth\\User') {
+        class_alias(\MM\Meros\Foundations\Auth\User::class, $class);
+    }
+});

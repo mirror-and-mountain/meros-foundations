@@ -27,11 +27,17 @@ class Application extends Container implements ApplicationContract
         \Illuminate\Filesystem\FilesystemServiceProvider::class,
         \Illuminate\Database\DatabaseServiceProvider::class,
         \Illuminate\Encryption\EncryptionServiceProvider::class,
+        \Illuminate\Hashing\HashServiceProvider::class,
         \Illuminate\Cache\CacheServiceProvider::class,
         \Illuminate\Cookie\CookieServiceProvider::class,
         \Illuminate\Session\SessionServiceProvider::class,
+        \Illuminate\Auth\AuthServiceProvider::class,
+        \Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        \Illuminate\Bus\BusServiceProvider::class,
+        \Illuminate\Queue\QueueServiceProvider::class,
         \MM\Meros\Foundations\View\ViewServiceProvider::class,
         \MM\Meros\Foundations\Providers\FoundationServiceProvider::class,
+        \MM\Meros\Foundations\Providers\ConsoleServiceProvider::class,
     ];
 
     protected string $basePath;
@@ -61,6 +67,7 @@ class Application extends Container implements ApplicationContract
         $this->singleton(PackageManifest::class, fn () => $this->makeManifest());
         $this->bindPaths();
         $this->registerCoreAliases();
+        $this->singleton(\Illuminate\Contracts\Console\Kernel::class, \MM\Meros\Foundations\Console\Kernel::class);
         $this->singleton(\Illuminate\Contracts\Http\Kernel::class, \MM\Meros\Foundations\Http\Kernel::class);
         $this->singleton(\Illuminate\Contracts\Debug\ExceptionHandler::class, \MM\Meros\Foundations\Exceptions\Handler::class);
 
@@ -482,6 +489,15 @@ class Application extends Container implements ApplicationContract
     {
         $aliases = [
             'app'           => [self::class, \Illuminate\Contracts\Container\Container::class, ApplicationContract::class, \Psr\Container\ContainerInterface::class],
+            'auth'          => [\Illuminate\Auth\AuthManager::class, \Illuminate\Contracts\Auth\Factory::class],
+            'auth.driver'   => [\Illuminate\Contracts\Auth\Guard::class],
+            'auth.password' => [\Illuminate\Auth\Passwords\PasswordBrokerManager::class, \Illuminate\Contracts\Auth\PasswordBrokerFactory::class],
+            'auth.password.broker' => [\Illuminate\Auth\Passwords\PasswordBroker::class, \Illuminate\Contracts\Auth\PasswordBroker::class],
+            'hash'          => [\Illuminate\Hashing\HashManager::class],
+            'hash.driver'   => [\Illuminate\Contracts\Hashing\Hasher::class],
+            'queue'         => [\Illuminate\Queue\QueueManager::class, \Illuminate\Contracts\Queue\Factory::class, \Illuminate\Contracts\Queue\Monitor::class],
+            'queue.connection' => [\Illuminate\Contracts\Queue\Queue::class],
+            'queue.failer'  => [\Illuminate\Queue\Failed\FailedJobProviderInterface::class],
             'blade.compiler' => [\Illuminate\View\Compilers\BladeCompiler::class],
             'cache'         => [\Illuminate\Cache\CacheManager::class, \Illuminate\Contracts\Cache\Factory::class],
             'cache.store'   => [\Illuminate\Cache\Repository::class, \Illuminate\Contracts\Cache\Repository::class],

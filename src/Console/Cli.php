@@ -20,6 +20,7 @@ final class Cli
             'meros:optimize' => Commands\OptimizeCommand::class,
             'meros:key'      => Commands\KeyCommand::class,
             'meros:publish'  => Commands\PublishCommand::class,
+            'meros:queue'    => Commands\QueueCommand::class,
         ] as $name => $class) {
             \WP_CLI::add_command($name, new $class($app));
         }
