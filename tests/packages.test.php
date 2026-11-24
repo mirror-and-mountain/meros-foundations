@@ -141,5 +141,38 @@ check(Auth::guard('portal')->check() && Auth::user()->name === 'Ada', 'guard sho
 Auth::logout();
 check(!Auth::check(), 'logout should clear the user');
 
+// Publishing a Laravel package's config (e.g. Socialite) into the theme.
+class WP_CLI
+{
+    public static array $out = [];
+    public static function success($m) { self::$out[] = "success:$m"; }
+    public static function warning($m) { self::$out[] = "warning:$m"; }
+    public static function error($m) { throw new RuntimeException($m); }
+    public static function line($m) { self::$out[] = $m; }
+}
+
+class VendorProvider extends Illuminate\Support\ServiceProvider
+{
+    public function boot(): void
+    {
+        $this->publishes([
+            __DIR__ . '/vendor-stub.php' => config_path('vendor-stub.php'),
+            __DIR__ . '/vendor-stub.php ' => public_path('escape.php'),
+        ], 'config');
+    }
+}
+file_put_contents(__DIR__ . '/vendor-stub.php', "<?php return ['key' => 'value'];\n");
+file_put_contents(__DIR__ . '/vendor-stub.php ', '');
+$app->register(VendorProvider::class);
+$publish = new MM\Meros\Foundations\Console\Commands\PublishCommand($app);
+$publish([], ['provider' => VendorProvider::class, 'tag' => 'config']);
+check(is_file(config_path('vendor-stub.php')), 'provider config should be published to the theme');
+check(!file_exists(public_path('escape.php')), 'non-config destinations should be skipped');
+unlink(config_path('vendor-stub.php'));
+$publish([], ['all' => true]);
+check(is_file(config_path('vendor-stub.php')), '--all should publish every provider that declares config');
+unlink(__DIR__ . '/vendor-stub.php');
+unlink(__DIR__ . '/vendor-stub.php ');
+
 echo "meros-foundations packages: ok\n";
 (new Illuminate\Filesystem\Filesystem())->deleteDirectory($tmp);

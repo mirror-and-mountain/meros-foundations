@@ -30,11 +30,11 @@ Storage resolves to the theme's `storage/` directory when it exists, otherwise `
 | `wp meros:optimize` | `run`, `clear` |
 | `wp meros:key` | `generate [--show] [--force]` |
 | `wp meros:queue` | `work`, `restart`, `retry`, `failed`, `forget`, `flush`, `clear` (wraps Laravel's `queue:*`; e.g. `wp meros:queue work <connection> --queue=x --stop-when-empty`) |
-| `wp meros:publish` | `[<name>...] [--list] [--force]` copies Meros config stubs to the theme's `config/` |
+| `wp meros:publish` | `[<name>...] [--provider=<class>] [--all] [--tag=<tag>] [--list] [--force]` copies Meros config stubs, or the config a Laravel/Meros package declares with `publishes()`, to the theme's `config/` (other destinations are ignored) |
 
 ## Not ported from Acorn
 
-Multisite, `make:*`, vendor/generic publishing, queue, scheduler, pagination, the assets manifest provider, `skipProvider` error isolation.
+Multisite, `make:*`, generic (non-config) publishing, queue, scheduler, pagination, the assets manifest provider, `skipProvider` error isolation.
 
 ## Testing
 
