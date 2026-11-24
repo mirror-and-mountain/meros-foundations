@@ -1,0 +1,22 @@
+{
+    "name": "mirror-and-mountain/meros-foundations",
+    "description": "A lean Laravel-in-WordPress integration layer for the Meros framework.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.3",
+        "laravel/framework": "^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MM\\Foundations\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MM\\Foundations\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
