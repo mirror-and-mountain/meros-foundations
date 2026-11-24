@@ -15,6 +15,10 @@ MM\Meros\Foundations\Foundations::boot(get_stylesheet_directory(), $providers, $
 - **Package discovery** – `PackageManifest` scans the theme, content root and `meros/composer_paths` filter (`extra.meros` or `extra.laravel` providers).
 - **WordPress runtime** – request capture and the `wordpress` catch-all route.
 
+## Paths and storage
+
+Storage resolves to the theme's `storage/` directory when it exists, otherwise `wp-content/cache/meros`. Any of `app`, `bootstrap`, `config`, `database`, `lang`, `public`, `resources`, `storage` can be overridden with a `MEROS_{TYPE}_PATH` env var or constant (relative to the theme).
+
 ## WP-CLI
 
 | Command | Subcommands / options |

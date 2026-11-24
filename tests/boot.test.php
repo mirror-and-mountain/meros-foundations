@@ -48,9 +48,11 @@ file_put_contents("{$theme}/resources/views/hello.blade.php", 'Hello {{ $who }} 
 file_put_contents("{$tmp}/stubs/view.php", '<?php return ["paths" => ["' . "{$theme}/resources/views" . '"], "framework_stub" => true];');
 file_put_contents("{$theme}/config/app.php", '<?php return ["name" => "Overridden"];');
 
+@mkdir("{$theme}/storage", 0777, true);
 $app = Foundations::create($theme, [], ["{$tmp}/stubs"]);
 $app->make(HttpKernel::class)->bootstrap();
 
+check($app->storagePath() === "{$theme}/storage", 'theme storage directory should be preferred');
 $config = $app['config'];
 
 check($config->get('app.env') === 'testing', 'foundations app stub should be applied');

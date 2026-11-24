@@ -21,7 +21,7 @@ final class Foundations
         }
 
         $app = (new Application($root))
-            ->usePaths(['storage' => self::storagePath()])
+            ->usePaths(self::paths($root))
             ->withProviders($providers);
 
         foreach (['framework/cache/data', 'framework/views', 'framework/sessions', 'logs', 'app'] as $directory) {
@@ -44,7 +44,38 @@ final class Foundations
         return $app;
     }
 
-    private static function storagePath(): string
+    /**
+     * Path overrides, as Acorn: MEROS_{TYPE}_PATH env var or constant (relative
+     * values resolve from the theme), otherwise a `storage` directory in the
+     * theme, otherwise wp-content/cache/meros.
+     */
+    private static function paths(string $root): array
+    {
+        $paths = [];
+
+        foreach (['app', 'bootstrap', 'config', 'database', 'lang', 'public', 'resources', 'storage'] as $type) {
+            $key   = 'MEROS_' . strtoupper($type) . '_PATH';
+            $value = getenv($key) ?: $_ENV[$key] ?? $_SERVER[$key] ?? (defined($key) ? constant($key) : null);
+
+            if ($value) {
+                $paths[$type] = preg_match('#^([/\\\\]|[A-Za-z]:)#', $value) ? $value : "{$root}/{$value}";
+            }
+        }
+
+        if (!isset($paths['storage'])) {
+            $themeStorage = function_exists('get_theme_file_path') ? get_theme_file_path('storage') : null;
+
+            $paths['storage'] = match (true) {
+                is_dir("{$root}/storage")                    => "{$root}/storage",
+                $themeStorage && is_dir($themeStorage)       => $themeStorage,
+                default                                      => self::fallbackStoragePath(),
+            };
+        }
+
+        return $paths;
+    }
+
+    private static function fallbackStoragePath(): string
     {
         return defined('WP_CONTENT_DIR') ? WP_CONTENT_DIR . '/cache/meros' : sys_get_temp_dir() . '/meros';
     }
