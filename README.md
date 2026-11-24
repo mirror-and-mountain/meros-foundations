@@ -12,7 +12,8 @@ MM\Meros\Foundations\Foundations::boot(get_stylesheet_directory(), $providers, $
 - **Config stubs** – `config/*.php` are WordPress-tuned defaults. Register more directories (`Foundations::boot(..., stubs: [...])` or `Stubs::register()`); later ones win. Layering order: Foundations stubs → registered stubs → the theme's own `config/`.
 - **Bootstrap / HTTP** – lean kernel, WordPress-safe exception handling (only takes over in debug), `web`/`wordpress` middleware groups (cookies + sessions, no CSRF, as Acorn), `routes/web.php`.
 - **Views** – Blade resolution ported from Acorn: namespace hints with theme `vendor/` overrides, `view.directives|components|composers`, auto-discovered `app/View/Composers`.
-- **Package discovery** – `PackageManifest` scans the theme, content root and `meros/composer_paths` filter (`extra.meros` or `extra.laravel` providers).
+- **Queue, auth, hashing, bus** – database/sync queues with `Artisan::call('queue:work')`, session/Eloquent auth and the password broker. `Illuminate\Foundation\Auth\User` resolves to `MM\Meros\Foundations\Auth\User`, so packages written against Laravel keep working. Config stubs: `auth`, `queue`.
+- **Package discovery** – `PackageManifest` scans the theme, content root and `meros/composer_paths` filter two lists: `extra.laravel.providers` (Laravel packages such as Livewire, registered by Foundations) and `extra.meros.provider`/`providers` (Meros packages, registered by the framework once its provider is up). `dont-discover` is honoured under either key. The cache rebuilds itself whenever a `composer.json` or `installed.json` is newer, so no composer hook is needed.
 - **WordPress runtime** – request capture and the `wordpress` catch-all route.
 
 ## Paths and storage
@@ -28,6 +29,7 @@ Storage resolves to the theme's `storage/` directory when it exists, otherwise `
 | `wp meros:config` | `cache`, `clear` |
 | `wp meros:optimize` | `run`, `clear` |
 | `wp meros:key` | `generate [--show] [--force]` |
+| `wp meros:queue` | `work`, `restart`, `retry`, `failed`, `forget`, `flush`, `clear` (wraps Laravel's `queue:*`; e.g. `wp meros:queue work <connection> --queue=x --stop-when-empty`) |
 | `wp meros:publish` | `[<name>...] [--list] [--force]` copies Meros config stubs to the theme's `config/` |
 
 ## Not ported from Acorn
