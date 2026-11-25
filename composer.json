@@ -45,6 +45,15 @@
             "MM\\Meros\\Foundations\\Tests\\": "tests/"
         }
     },
+    "require-dev": {
+        "illuminate/testing": "^13.0",
+        "phpunit/phpunit": "^9.6",
+        "yoast/phpunit-polyfills": "^3.1"
+    },
+    "scripts": {
+        "test": "phpunit -c phpunit.xml",
+        "test:integration": "phpunit -c phpunit.integration.xml"
+    },
     "minimum-stability": "stable",
     "prefer-stable": true
 }

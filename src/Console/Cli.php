@@ -21,6 +21,7 @@ final class Cli
             'meros:key'      => Commands\KeyCommand::class,
             'meros:publish'  => Commands\PublishCommand::class,
             'meros:queue'    => Commands\QueueCommand::class,
+            'meros:test'     => Commands\TestCommand::class,
         ] as $name => $class) {
             \WP_CLI::add_command($name, new $class($app));
         }

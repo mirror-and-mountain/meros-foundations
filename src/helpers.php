@@ -124,6 +124,13 @@ if (!function_exists('event')) {
     }
 }
 
+if (!function_exists('now')) {
+    function now($timezone = null)
+    {
+        return \Illuminate\Support\Facades\Date::now($timezone);
+    }
+}
+
 // Packages written against Laravel reference these Foundation classes, which Foundations replaces.
 spl_autoload_register(static function (string $class): void {
     static $aliases = [
