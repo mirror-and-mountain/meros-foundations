@@ -18,6 +18,10 @@ use RuntimeException;
 /**
  * A lean application container for running Laravel components inside WordPress.
  * Service providers are always registered eagerly (no deferred loading).
+ *
+ * Implements Laravel's application contract without Illuminate\Foundation.
+ * Construction installs the base services; the kernels load configuration,
+ * register the remaining providers and boot them before handling work.
  */
 class Application extends Container implements ApplicationContract
 {
@@ -52,7 +56,9 @@ class Application extends Container implements ApplicationContract
     protected bool $hasBeenBootstrapped = false;
     protected bool $booted = false;
     protected bool $handlesWordPress = false;
+    /** @var ServiceProvider[] Ordered registration list, also used as the boot queue. */
     protected array $providers = [];
+    /** @var array<class-string<ServiceProvider>, bool> Registration status, not boot status. */
     protected array $loadedProviders = [];
     protected array $extraProviders = [];
     protected array $bootingCallbacks = [];
@@ -75,6 +81,7 @@ class Application extends Container implements ApplicationContract
         $this->singleton(\Illuminate\Contracts\Http\Kernel::class, \MM\Meros\Foundations\Http\Kernel::class);
         $this->singleton(\Illuminate\Contracts\Debug\ExceptionHandler::class, \MM\Meros\Foundations\Exceptions\Handler::class);
 
+        // These services must be registered before the kernels and bootstrappers can resolve.
         foreach ([EventServiceProvider::class, ContextServiceProvider::class, LogServiceProvider::class, RoutingServiceProvider::class] as $provider) {
             $this->register($provider);
         }
@@ -82,7 +89,11 @@ class Application extends Container implements ApplicationContract
 
     // ---- Providers -------------------------------------------------------
 
-    /** @param string[] $providers */
+    /**
+     * Queue explicit providers for registration after core and discovered providers.
+     *
+     * @param string[] $providers
+     */
     public function withProviders(array $providers): static
     {
         $this->extraProviders = array_values(array_unique([...$this->extraProviders, ...$providers]));
@@ -90,6 +101,10 @@ class Application extends Container implements ApplicationContract
         return $this;
     }
 
+    /**
+     * Register Laravel providers in dependency order once configuration is loaded.
+     * Meros package providers are registered separately by the framework.
+     */
     public function registerConfiguredProviders()
     {
         $providers = [
@@ -104,6 +119,12 @@ class Application extends Container implements ApplicationContract
         }
     }
 
+    /**
+     * Register a provider once unless forced; providers added after boot also boot immediately.
+     *
+     * @param string|ServiceProvider $provider
+     * @return ServiceProvider
+     */
     public function register($provider, $force = false)
     {
         if (($registered = $this->getProvider($provider)) && !$force) {
@@ -139,11 +160,13 @@ class Application extends Container implements ApplicationContract
         return new $provider($this);
     }
 
+    /** Laravel compatibility: deferred providers are registered eagerly here. */
     public function registerDeferredProvider($provider, $service = null)
     {
         $this->register($provider);
     }
 
+    /** Laravel compatibility: there is no deferred-provider queue to drain. */
     public function loadDeferredProviders()
     {
     }
@@ -176,8 +199,11 @@ class Application extends Container implements ApplicationContract
 
         $this->fire($this->bootingCallbacks);
 
-        foreach ($this->providers as $provider) {
-            $this->bootProvider($provider);
+        // Read the live queue: framework boot appends package and theme providers.
+        // A foreach snapshot would leave those providers registered but unbooted.
+        // Keep $booted false so register() leaves appended providers for this loop.
+        for ($index = 0; $index < count($this->providers); $index++) {
+            $this->bootProvider($this->providers[$index]);
         }
 
         $this->booted = true;
@@ -185,6 +211,7 @@ class Application extends Container implements ApplicationContract
         $this->fire($this->bootedCallbacks);
     }
 
+    /** Run provider lifecycle callbacks and resolve boot() dependencies through the container. */
     protected function bootProvider(ServiceProvider $provider): void
     {
         $provider->callBootingCallbacks();
@@ -224,6 +251,7 @@ class Application extends Container implements ApplicationContract
 
     public function bootstrapWith(array $bootstrappers)
     {
+        // Nested kernel calls during provider boot must not restart application bootstrap.
         $this->hasBeenBootstrapped = true;
 
         foreach ($bootstrappers as $bootstrapper) {
@@ -269,6 +297,7 @@ class Application extends Container implements ApplicationContract
 
     /**
      * Override any of: app, bootstrap, config, database, lang, public, resources, storage, environment.
+     * Rebind path services so Laravel helpers see the same overrides as these accessors.
      */
     public function usePaths(array $paths): static
     {
@@ -340,6 +369,7 @@ class Application extends Container implements ApplicationContract
         return $this->joinPaths($this->paths['storage'] ?? $this->basePath('storage'), $path);
     }
 
+    /** Keep generated bootstrap caches in writable storage unless explicitly overridden. */
     public function bootstrapPath($path = '')
     {
         return $this->joinPaths($this->paths['bootstrap'] ?? $this->storagePath('framework'), $path);
@@ -420,6 +450,7 @@ class Application extends Container implements ApplicationContract
         return (bool) $this['config']->get('app.debug', false);
     }
 
+    /** No Laravel maintenance-mode manager; maintenance detection uses marker files below. */
     public function maintenanceMode()
     {
         return null;
@@ -459,6 +490,7 @@ class Application extends Container implements ApplicationContract
         return $this;
     }
 
+    /** Infer the application namespace from the PSR-4 mapping that targets the app directory. */
     public function getNamespace()
     {
         if ($this->namespace !== null) {
@@ -480,6 +512,10 @@ class Application extends Container implements ApplicationContract
 
     // ---- Internals -------------------------------------------------------
 
+    /**
+     * Discover Composer roots for the active theme, its parent and wp-content.
+     * The filter can add other roots; only directories with composer.json are retained.
+     */
     protected function makeManifest(): PackageManifest
     {
         $paths = [$this->basePath(), get_template_directory(), get_stylesheet_directory()];
@@ -494,6 +530,10 @@ class Application extends Container implements ApplicationContract
         return new PackageManifest(new Filesystem(), $paths, $this->getCachedPackagesPath());
     }
 
+    /**
+     * Route concrete classes and contracts to the service keys used by Laravel providers.
+     * Aliases share the underlying bindings rather than creating separate service instances.
+     */
     protected function registerCoreAliases(): void
     {
         $aliases = [
@@ -536,6 +576,7 @@ class Application extends Container implements ApplicationContract
         }
     }
 
+    /** Clear provider lifecycle state and facade instances alongside the container bindings. */
     public function flush()
     {
         parent::flush();

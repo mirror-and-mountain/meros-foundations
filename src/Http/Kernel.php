@@ -17,6 +17,7 @@ class Kernel implements KernelContract
     protected array $bootstrappers = [
         Bootstrap\LoadEnvironmentVariables::class,
         Bootstrap\LoadConfiguration::class,
+        Bootstrap\SetRequestForConsole::class,
         Bootstrap\HandleExceptions::class,
         Bootstrap\RegisterFacades::class,
         Bootstrap\RegisterProviders::class,

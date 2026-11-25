@@ -8,7 +8,7 @@ MM\Meros\Foundations\Foundations::boot(get_stylesheet_directory(), $providers, $
 
 ## What it does
 
-- **Application** – a small container-based application (eager providers, paths, `.env` lookup, config/package caches under `storage/framework`).
+- **Application** – a small container-based application (eager providers, including providers registered during boot, paths, `.env` lookup, config/package caches under `storage/framework`).
 - **Config stubs** – `config/*.php` are WordPress-tuned defaults. Register more directories (`Foundations::boot(..., stubs: [...])` or `Stubs::register()`); later ones win. Layering order: Foundations stubs → registered stubs → the theme's own `config/`.
 - **Bootstrap / HTTP** – lean kernel, WordPress-safe exception handling (only takes over in debug), `web`/`wordpress` middleware groups (cookies + sessions, no CSRF, as Acorn), `routes/web.php`.
 - **Views** – Blade resolution ported from Acorn: namespace hints with theme `vendor/` overrides, `view.directives|components|composers`, auto-discovered `app/View/Composers`.
@@ -21,6 +21,8 @@ MM\Meros\Foundations\Foundations::boot(get_stylesheet_directory(), $providers, $
 Storage resolves to the theme's `storage/` directory when it exists, otherwise `wp-content/cache/meros`. Any of `app`, `bootstrap`, `config`, `database`, `lang`, `public`, `resources`, `storage` can be overridden with a `MEROS_{TYPE}_PATH` env var or constant (relative to the theme).
 
 ## WP-CLI
+
+Console bootstrapping binds a synthetic request using `app.url` before providers load, so request-dependent services are available to WP-CLI commands.
 
 | Command | Subcommands / options |
 | --- | --- |
