@@ -3,6 +3,7 @@
 namespace MM\Meros\Foundations\Tests\Unit;
 
 use Illuminate\Support\ServiceProvider;
+use MM\Meros\Foundations\Console\Cli;
 use MM\Meros\Foundations\Console\Commands\CacheCommand;
 use MM\Meros\Foundations\Console\Commands\ConfigCommand;
 use MM\Meros\Foundations\Console\Commands\OptimizeCommand;
@@ -24,6 +25,26 @@ final class ConsoleTest extends TestCase
     {
         parent::setUp();
         require __DIR__ . '/../Support/wp-cli.php';
+    }
+
+    public function test_bare_meros_lists_registered_commands_including_later_package_commands(): void
+    {
+        defined('WP_CLI') || define('WP_CLI', true);
+        Cli::register($this->createApplication());
+        \WP_CLI::add_command('meros:install', static function (): void {}, [
+            'shortdesc' => 'Install Meros tables.',
+        ]);
+        \WP_CLI::add_command('unrelated', static function (): void {});
+        \WP_CLI::$messages = [];
+
+        (\WP_CLI::$commands['meros'])();
+
+        $output = implode("\n", \WP_CLI::$messages);
+        $this->assertStringContainsString('wp meros:cache', $output);
+        $this->assertStringContainsString('wp meros:test', $output);
+        $this->assertStringContainsString('wp meros:install - Install Meros tables.', $output);
+        $this->assertStringContainsString('wp help <command>', $output);
+        $this->assertStringNotContainsString('unrelated', $output);
     }
 
     public function test_housekeeping_commands_clear_real_fixture_caches(): void

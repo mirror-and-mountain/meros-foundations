@@ -2,7 +2,9 @@
 
 namespace MM\Meros\Foundations\Console\Commands;
 
-/** Manage the application cache. */
+/**
+ * Manage the application cache.
+ */
 class CacheCommand extends Command
 {
     /**

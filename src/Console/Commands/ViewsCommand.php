@@ -5,7 +5,9 @@ namespace MM\Meros\Foundations\Console\Commands;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Finder\Finder;
 
-/** Manage compiled Blade views. */
+/**
+ * Manage compiled Blade views.
+ */
 class ViewsCommand extends Command
 {
     /**

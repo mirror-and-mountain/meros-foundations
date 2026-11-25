@@ -4,7 +4,9 @@ namespace MM\Meros\Foundations\Console\Commands;
 
 use Illuminate\Encryption\Encrypter;
 
-/** Application key management. */
+/**
+ * Application key management.
+ */
 class KeyCommand extends Command
 {
     /**

@@ -4,7 +4,9 @@ namespace MM\Meros\Foundations\Console\Commands;
 
 use MM\Meros\Foundations\Bootstrap\LoadConfiguration;
 
-/** Cache the merged configuration into a single file. */
+/**
+ * Cache the merged configuration into a single file.
+ */
 class ConfigCommand extends Command
 {
     /**

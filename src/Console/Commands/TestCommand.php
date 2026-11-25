@@ -5,7 +5,9 @@ namespace MM\Meros\Foundations\Console\Commands;
 use Composer\InstalledVersions;
 use Symfony\Component\Process\Process;
 
-/** Discover and run PHPUnit suites in the theme and installed Meros packages. */
+/**
+ * Discover and run PHPUnit suites in the theme and installed Meros packages.
+ */
 class TestCommand extends Command
 {
     /**
