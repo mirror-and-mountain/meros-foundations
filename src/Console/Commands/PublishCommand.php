@@ -5,6 +5,7 @@ namespace MM\Meros\Foundations\Console\Commands;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use MM\Meros\Foundations\Config\Stubs;
+use MM\Meros\Foundations\PackageManifest;
 
 /**
  * Copy Meros config stubs, or the config files a Laravel package declares with
@@ -28,6 +29,10 @@ class PublishCommand extends Command
      * provider (e.g. Laravel\\Socialite\\SocialiteServiceProvider). Only files
      * destined for the theme's config directory are copied.
      *
+     * [--package=<name>]
+     * : Publish the config of a discovered package by name, full or short
+     * (e.g. mirror-and-mountain/meros-crm or meros-crm).
+     *
      * [--all]
      * : Publish the config files of every registered provider that declares any
      * (Meros packages and Laravel packages alike).
@@ -44,6 +49,24 @@ class PublishCommand extends Command
     {
         if (!empty($assoc['all'])) {
             foreach (ServiceProvider::publishableProviders() as $provider) {
+                $this->publishProvider($provider, $assoc['tag'] ?? null, !empty($assoc['force']), true);
+            }
+
+            return;
+        }
+
+        if (!empty($assoc['package'])) {
+            $package = $this->app->make(PackageManifest::class)->package($assoc['package']);
+
+            if (!$package) {
+                \WP_CLI::error("No Meros or Laravel package named '{$assoc['package']}' was discovered.");
+            }
+
+            if (!$package['providers']) {
+                \WP_CLI::error("'{$assoc['package']}' matches several packages: {$package['name']}. Use the full name.");
+            }
+
+            foreach ($package['providers'] as $provider) {
                 $this->publishProvider($provider, $assoc['tag'] ?? null, !empty($assoc['force']), true);
             }
 

@@ -85,6 +85,9 @@ $manifest->flush();
 check(!empty($GLOBALS['laravel_provider']), 'discovered laravel providers should register');
 check($manifest->merosProviders() === ['Acme\\Pkg\\Provider', 'Acme\\Second\\Provider'], 'meros providers should be discovered from extra.meros.provider(s)');
 check($manifest->providers() === ['Acme\\Lara\\Provider'], 'laravel providers must stay separate from meros providers');
+check($manifest->package('meros-pkg') === ['name' => 'acme/meros-pkg', 'providers' => ['Acme\\Pkg\\Provider']], 'packages should resolve by short name');
+check($manifest->package('acme/laravel-pkg')['providers'] === ['Acme\\Lara\\Provider'], 'packages should resolve by full name');
+check($manifest->package('missing') === null, 'unknown packages should not resolve');
 
 touch("{$theme}/vendor/composer/installed.json", time() + 10);
 file_put_contents("{$theme}/vendor/composer/installed.json", json_encode(['packages' => []]));

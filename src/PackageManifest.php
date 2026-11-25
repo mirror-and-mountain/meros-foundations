@@ -40,6 +40,29 @@ class PackageManifest
         return $this->collect('meros');
     }
 
+    /**
+     * Resolve a package by full (`mirror-and-mountain/meros-crm`) or short (`meros-crm`) name.
+     *
+     * @return array{name: string, providers: string[]}|null null when no package matches
+     */
+    public function package(string $name): ?array
+    {
+        $name  = strtolower(trim($name));
+        $match = array_filter(
+            $this->manifest(),
+            fn ($_, $key) => strtolower($key) === $name || str_ends_with(strtolower($key), '/' . $name),
+            ARRAY_FILTER_USE_BOTH
+        );
+
+        if (count($match) !== 1) {
+            return count($match) > 1 ? ['name' => implode(', ', array_keys($match)), 'providers' => []] : null;
+        }
+
+        $key = array_key_first($match);
+
+        return ['name' => $key, 'providers' => array_merge($match[$key]['meros'], $match[$key]['providers'])];
+    }
+
     protected function collect(string $key): array
     {
         return array_values(array_unique(array_merge([], ...array_column($this->manifest(), $key))));
