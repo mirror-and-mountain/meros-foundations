@@ -124,9 +124,18 @@ if (!function_exists('event')) {
     }
 }
 
-// Packages written against Laravel extend this base user class.
+// Packages written against Laravel reference these Foundation classes, which Foundations replaces.
 spl_autoload_register(static function (string $class): void {
-    if ($class === 'Illuminate\\Foundation\\Auth\\User') {
-        class_alias(\MM\Meros\Foundations\Auth\User::class, $class);
+    static $aliases = [
+        'Illuminate\\Foundation\\Vite'                                      => \MM\Meros\Foundations\Vite::class,
+        'Illuminate\\Foundation\\Auth\\User'                                => \MM\Meros\Foundations\Auth\User::class,
+        'Illuminate\\Foundation\\Auth\\Access\\AuthorizesRequests'          => \MM\Meros\Foundations\Auth\Access\AuthorizesRequests::class,
+        'Illuminate\\Foundation\\Http\\Events\\RequestHandled'              => \MM\Meros\Foundations\Http\Events\RequestHandled::class,
+        'Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull' => \MM\Meros\Foundations\Http\Middleware\ConvertEmptyStringsToNull::class,
+        'Illuminate\\Foundation\\Http\\Middleware\\TrimStrings'              => \MM\Meros\Foundations\Http\Middleware\TrimStrings::class,
+    ];
+
+    if (isset($aliases[$class])) {
+        class_alias($aliases[$class], $class);
     }
 });

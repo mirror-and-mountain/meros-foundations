@@ -5,6 +5,7 @@ namespace MM\Meros\Foundations\Http;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Http\Kernel as KernelContract;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Pipeline;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Facade;
 use MM\Meros\Foundations\Application;
@@ -21,6 +22,9 @@ class Kernel implements KernelContract
         Bootstrap\RegisterProviders::class,
         Bootstrap\BootProviders::class,
     ];
+
+    /** @var string[] Global middleware, run around every routed request. */
+    protected array $middleware = [];
 
     public function __construct(protected Application $app, protected Router $router)
     {
@@ -55,13 +59,44 @@ class Kernel implements KernelContract
         try {
             $this->bootstrap();
 
-            return $this->router->dispatch($request);
+            $response = (new Pipeline($this->app))
+                ->send($request)
+                ->through($this->middleware)
+                ->then(fn ($request) => $this->router->dispatch($request));
         } catch (Throwable $e) {
             $handler = $this->app->make(ExceptionHandler::class);
             $handler->report($e);
 
-            return $handler->render($request, $e);
+            $response = $handler->render($request, $e);
         }
+
+        // Livewire and other packages listen for this to post-process the response.
+        $this->app['events']->dispatch(new Events\RequestHandled($request, $response));
+
+        return $response;
+    }
+
+    public function hasMiddleware($middleware): bool
+    {
+        return in_array($middleware, $this->middleware, true);
+    }
+
+    public function pushMiddleware($middleware): static
+    {
+        if (!$this->hasMiddleware($middleware)) {
+            $this->middleware[] = $middleware;
+        }
+
+        return $this;
+    }
+
+    public function prependMiddleware($middleware): static
+    {
+        if (!$this->hasMiddleware($middleware)) {
+            array_unshift($this->middleware, $middleware);
+        }
+
+        return $this;
     }
 
     public function terminate($request, $response)

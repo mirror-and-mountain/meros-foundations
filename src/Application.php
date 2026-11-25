@@ -67,6 +67,7 @@ class Application extends Container implements ApplicationContract
         $this->singleton(PackageManifest::class, fn () => $this->makeManifest());
         $this->bindPaths();
         $this->registerCoreAliases();
+        $this->singleton('Illuminate\\Foundation\\Vite', fn () => new \MM\Meros\Foundations\Vite());
         $this->singleton(\Illuminate\Contracts\Console\Kernel::class, \MM\Meros\Foundations\Console\Kernel::class);
         $this->singleton(\Illuminate\Contracts\Http\Kernel::class, \MM\Meros\Foundations\Http\Kernel::class);
         $this->singleton(\Illuminate\Contracts\Debug\ExceptionHandler::class, \MM\Meros\Foundations\Exceptions\Handler::class);
