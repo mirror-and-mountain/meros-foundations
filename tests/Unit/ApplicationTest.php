@@ -7,6 +7,9 @@ use Illuminate\Support\ServiceProvider;
 use MM\Meros\Foundations\Bootstrap\SetRequestForConsole;
 use MM\Meros\Foundations\Testing\TestCase;
 
+/**
+ * Tests provider boot ordering and console request availability during application startup.
+ */
 final class ApplicationTest extends TestCase
 {
     public function test_providers_registered_during_boot_are_booted_once(): void

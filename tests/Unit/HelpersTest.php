@@ -5,6 +5,9 @@ namespace MM\Meros\Foundations\Tests\Unit;
 use Illuminate\Support\Facades\Date;
 use MM\Meros\Foundations\Testing\TestCase;
 
+/**
+ * Verifies that the now() helper respects the configured date factory and requested timezone.
+ */
 final class HelpersTest extends TestCase
 {
     public function test_now_respects_the_date_factory_clock_and_requested_timezone(): void

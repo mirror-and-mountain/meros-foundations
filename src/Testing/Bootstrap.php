@@ -5,6 +5,9 @@ namespace MM\Meros\Foundations\Testing;
 use Composer\Autoload\ClassLoader;
 use RuntimeException;
 
+/**
+ * Loads repository test namespaces into a standalone or shared Composer autoloader.
+ */
 final class Bootstrap
 {
     /** Load test namespaces for standalone installs or a shared Composer test runner. */

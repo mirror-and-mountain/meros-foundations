@@ -13,6 +13,9 @@ use MM\Meros\Foundations\Foundations;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use RuntimeException;
 
+/**
+ * Provides isolated Foundations applications with WordPress stubs, disposable files and SQLite defaults.
+ */
 abstract class TestCase extends PHPUnitTestCase
 {
     protected ?Application $app = null;

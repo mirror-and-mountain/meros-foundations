@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Schema;
 use MM\Meros\Foundations\Auth\User;
 use MM\Meros\Foundations\Testing\TestCase;
 
+/**
+ * Tests database-backed queue processing and session authentication with Eloquent users.
+ */
 final class QueueAuthTest extends TestCase
 {
     public function test_database_jobs_are_processed_by_artisan(): void

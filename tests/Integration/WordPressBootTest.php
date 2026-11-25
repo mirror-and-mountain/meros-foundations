@@ -4,6 +4,9 @@ namespace MM\Meros\Foundations\Tests\Integration;
 
 use MM\Meros\Foundations\Testing\WordPressTestCase;
 
+/**
+ * Verifies that Foundations boots against the dedicated WordPress test database.
+ */
 final class WordPressBootTest extends WordPressTestCase
 {
     public function test_application_uses_the_wordpress_test_database(): void

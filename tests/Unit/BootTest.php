@@ -9,6 +9,9 @@ use MM\Meros\Foundations\Bootstrap\LoadConfiguration;
 use MM\Meros\Foundations\Config\Stubs;
 use MM\Meros\Foundations\Testing\TestCase;
 
+/**
+ * Tests isolated application boot, configuration layering, paths, views, routing, logging and publishing.
+ */
 final class BootTest extends TestCase
 {
     public function test_configuration_layers_and_storage_paths(): void

@@ -13,6 +13,8 @@ use MM\Meros\Foundations\PackageManifest;
 use MM\Meros\Foundations\Testing\TestCase;
 
 /**
+ * Tests CLI cache maintenance, publishing and test-runner arguments, failures and streamed output.
+ *
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */

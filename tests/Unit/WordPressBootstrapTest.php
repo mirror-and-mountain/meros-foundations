@@ -6,6 +6,9 @@ use MM\Meros\Foundations\Testing\TestCase;
 use MM\Meros\Foundations\Testing\WordPress;
 use RuntimeException;
 
+/**
+ * Verifies that integration bootstrap rejects an existing WordPress process or a development database.
+ */
 final class WordPressBootstrapTest extends TestCase
 {
     public function test_integration_bootstrap_rejects_an_existing_wordpress_process(): void

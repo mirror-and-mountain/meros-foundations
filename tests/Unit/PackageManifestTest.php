@@ -6,6 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use MM\Meros\Foundations\PackageManifest;
 use MM\Meros\Foundations\Testing\TestCase;
 
+/**
+ * Tests Composer provider discovery, manifest cache invalidation and package discovery exclusions.
+ */
 final class PackageManifestTest extends TestCase
 {
     private function installMetadata(): void

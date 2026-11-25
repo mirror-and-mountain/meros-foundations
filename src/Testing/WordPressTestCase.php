@@ -12,6 +12,9 @@ use MM\Meros\Foundations\Config\Stubs;
 use MM\Meros\Foundations\Foundations;
 use RuntimeException;
 
+/**
+ * Boots Foundations in real WordPress tests and cleans up fixture files, tracked tables and registered blocks.
+ */
 abstract class WordPressTestCase extends \WP_UnitTestCase
 {
     protected Application $app;

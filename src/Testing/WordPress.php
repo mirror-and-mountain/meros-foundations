@@ -4,6 +4,9 @@ namespace MM\Meros\Foundations\Testing;
 
 use RuntimeException;
 
+/**
+ * Boots the official WordPress test library with Meros test configuration and prerequisite checks.
+ */
 final class WordPress
 {
     public static function bootstrap(): void

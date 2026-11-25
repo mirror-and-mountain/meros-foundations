@@ -4,6 +4,9 @@ namespace MM\Meros\Foundations\Tests\Unit;
 
 use MM\Meros\Foundations\Testing\TestCase;
 
+/**
+ * Verifies that Livewire boots with the compatibility services supplied by Foundations.
+ */
 final class LivewireTest extends TestCase
 {
     public function test_livewire_boots_with_foundation_compatibility_services(): void
