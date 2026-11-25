@@ -28,6 +28,8 @@ class Application extends Container implements ApplicationContract
         \Illuminate\Database\DatabaseServiceProvider::class,
         \Illuminate\Encryption\EncryptionServiceProvider::class,
         \Illuminate\Hashing\HashServiceProvider::class,
+        \Illuminate\Translation\TranslationServiceProvider::class,
+        \Illuminate\Validation\ValidationServiceProvider::class,
         \Illuminate\Cache\CacheServiceProvider::class,
         \Illuminate\Cookie\CookieServiceProvider::class,
         \Illuminate\Session\SessionServiceProvider::class,
@@ -437,6 +439,11 @@ class Application extends Container implements ApplicationContract
         return $this['config']->get('app.locale');
     }
 
+    public function getFallbackLocale()
+    {
+        return $this['config']->get('app.fallback_locale');
+    }
+
     public function setLocale($locale)
     {
         $this['config']->set('app.locale', $locale);
@@ -515,6 +522,8 @@ class Application extends Container implements ApplicationContract
             'router'        => [\Illuminate\Routing\Router::class, \Illuminate\Contracts\Routing\Registrar::class, \Illuminate\Contracts\Routing\BindingRegistrar::class],
             'session'       => [\Illuminate\Session\SessionManager::class],
             'session.store' => [\Illuminate\Session\Store::class, \Illuminate\Contracts\Session\Session::class],
+            'translator'    => [\Illuminate\Translation\Translator::class, \Illuminate\Contracts\Translation\Translator::class],
+            'validator'     => [\Illuminate\Validation\Factory::class, \Illuminate\Contracts\Validation\Factory::class],
             'url'           => [\Illuminate\Routing\UrlGenerator::class, \Illuminate\Contracts\Routing\UrlGenerator::class],
             'view'          => [\Illuminate\View\Factory::class, \Illuminate\Contracts\View\Factory::class],
         ];

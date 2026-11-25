@@ -180,6 +180,9 @@ unlink(__DIR__ . '/vendor-stub.php ');
 // Livewire boots against the Foundation shims and its assets are injected via RequestHandled.
 $app['config']->set('app.env', 'local');
 $app->register(Livewire\LivewireServiceProvider::class);
+$app->register(Carbon\Laravel\ServiceProvider::class);
+check($app->make('translator')->getLocale() === 'en_GB', 'translator should be available');
+check(!app('validator')->make(['a' => ''], ['a' => 'required'])->passes(), 'validator should be available');
 check(class_exists(Illuminate\Foundation\Http\Middleware\TrimStrings::class), 'Foundation middleware aliases should resolve');
 check($app['events']->hasListeners(Illuminate\Foundation\Http\Events\RequestHandled::class), 'Livewire should listen for RequestHandled');
 
