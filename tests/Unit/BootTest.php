@@ -5,6 +5,8 @@ namespace MM\Meros\Foundations\Tests\Unit;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
 use MM\Meros\Foundations\Bootstrap\LoadConfiguration;
 use MM\Meros\Foundations\Config\Stubs;
 use MM\Meros\Foundations\Testing\TestCase;
@@ -56,6 +58,30 @@ final class BootTest extends TestCase
         $this->assertStringNotContainsString('Unable to create configured logger', $log);
     }
 
+    public function test_fluent_route_names_resolve_for_theme_and_package_routes_before_dispatch(): void
+    {
+        $this->writeFile('routes/web.php', <<<'PHP'
+<?php
+use Illuminate\Support\Facades\Route;
+
+Route::prefix('portal')->name('portal.')->group(function () {
+    Route::get('login', fn () => 'Login')->name('login');
+    Route::get('/', fn () => 'Dashboard')
+        ->middleware(\MM\Meros\Foundations\Tests\Unit\NamedRouteRedirect::class)
+        ->name('dashboard');
+});
+PHP);
+        $app = $this->createApplication([NamedRoutesProvider::class]);
+
+        $this->assertSame('/portal/login', route('portal.login', [], false));
+        $this->assertSame('/package/login', route('package.login', [], false));
+        $this->assertTrue(Route::has('portal.dashboard'));
+
+        $response = $app->make(Kernel::class)->handle(Request::create('/portal'));
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame(route('portal.login'), $response->headers->get('Location'));
+    }
+
     public function test_publishing_uses_the_highest_priority_stub(): void
     {
         $this->writeFile('stubs/view.php', '<?php return ["framework_stub" => true];');
@@ -64,5 +90,23 @@ final class BootTest extends TestCase
         $this->assertContains('app', $published);
         $this->assertContains('view', $published);
         $this->assertTrue((require $this->directory . '/published/view.php')['framework_stub']);
+    }
+}
+
+class NamedRoutesProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        Route::prefix('package')->name('package.')->group(function () {
+            Route::get('login', fn () => 'Package login')->name('login');
+        });
+    }
+}
+
+class NamedRouteRedirect
+{
+    public function handle(Request $request, \Closure $next)
+    {
+        return redirect()->route('portal.login');
     }
 }
