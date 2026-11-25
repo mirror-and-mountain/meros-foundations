@@ -7,6 +7,7 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 use Illuminate\Events\EventServiceProvider;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Log\Context\ContextServiceProvider;
 use Illuminate\Log\LogServiceProvider;
 use Illuminate\Routing\RoutingServiceProvider;
 use Illuminate\Support\Env;
@@ -74,7 +75,7 @@ class Application extends Container implements ApplicationContract
         $this->singleton(\Illuminate\Contracts\Http\Kernel::class, \MM\Meros\Foundations\Http\Kernel::class);
         $this->singleton(\Illuminate\Contracts\Debug\ExceptionHandler::class, \MM\Meros\Foundations\Exceptions\Handler::class);
 
-        foreach ([EventServiceProvider::class, LogServiceProvider::class, RoutingServiceProvider::class] as $provider) {
+        foreach ([EventServiceProvider::class, ContextServiceProvider::class, LogServiceProvider::class, RoutingServiceProvider::class] as $provider) {
             $this->register($provider);
         }
     }

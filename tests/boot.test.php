@@ -44,9 +44,9 @@ function check(bool $ok, string $message): void
 
 file_put_contents("{$theme}/composer.json", '{"name":"demo/theme"}');
 file_put_contents("{$theme}/routes/web.php", '<?php Illuminate\Support\Facades\Route::get("/hi", fn () => view("hello", ["who" => "Meros"]));');
-file_put_contents("{$theme}/resources/views/hello.blade.php", 'Hello {{ $who }} from {{ config("app.name") }}');
+file_put_contents("{$theme}/resources/views/hello.blade.php", 'Hello {{ Str::upper($who) }} from {{ config("app.name") }}');
 file_put_contents("{$tmp}/stubs/view.php", '<?php return ["paths" => ["' . "{$theme}/resources/views" . '"], "framework_stub" => true];');
-file_put_contents("{$theme}/config/app.php", '<?php return ["name" => "Overridden"];');
+file_put_contents("{$theme}/config/app.php", '<?php return ["name" => "Overridden", "aliases" => ["CustomStr" => Illuminate\Support\Str::class]];');
 
 @mkdir("{$theme}/storage", 0777, true);
 $app = Foundations::create($theme, [], ["{$tmp}/stubs"]);
@@ -66,7 +66,14 @@ check($cached['app']['name'] === 'Overridden', 'config must survive caching');
 
 check($app->make('view')->exists('meros-test::x') === false, 'unknown namespaced view must not exist');
 $response = $app->make(HttpKernel::class)->handle(Request::create('/hi'));
-check(trim($response->getContent()) === 'Hello Meros from Overridden', 'blade view should render through a routed request: ' . $response->getContent());
+check(trim($response->getContent()) === 'Hello MEROS from Overridden', 'blade view should resolve the default Str alias: ' . $response->getContent());
+check(CustomStr::upper('custom') === 'CUSTOM', 'configured class aliases should resolve');
+
+Illuminate\Support\Facades\Context::add('request_id', 'test-123');
+$app['log']->info('Configured logger works');
+$log = file_get_contents($app->storagePath('logs/meros.log'));
+check(str_contains($log, 'Configured logger works') && str_contains($log, 'test-123'), 'configured logger should include context');
+check(!str_contains($log, 'Unable to create configured logger'), 'logger should not fall back to emergency logging');
 
 $published = Stubs::publish("{$tmp}/published");
 check(in_array('app', $published, true) && in_array('view', $published, true), 'publish should copy the winning stubs');
