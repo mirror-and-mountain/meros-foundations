@@ -110,6 +110,29 @@ if (!function_exists('report')) {
     }
 }
 
+if (!function_exists('rescue')) {
+    /**
+     * Runs a callback, reporting failures before returning a fallback value.
+     *
+     * @param callable $callback
+     * @param mixed $rescue A value or closure receiving the exception.
+     * @param bool|Closure $report Whether to report, or a closure deciding for the exception.
+     * @return mixed
+     */
+    function rescue($callback, $rescue = null, $report = true)
+    {
+        try {
+            return $callback();
+        } catch (Throwable $exception) {
+            if (value($report, $exception)) {
+                report($exception);
+            }
+
+            return value($rescue, $exception);
+        }
+    }
+}
+
 if (!function_exists('abort')) {
     function abort($code, $message = '', array $headers = [])
     {
